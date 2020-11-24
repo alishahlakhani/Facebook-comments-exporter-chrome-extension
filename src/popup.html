@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+
+      width: 300px;
+      height: 300px;
+
+      border-radius: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+</head>
+
+<body class="bg-red-200">
+  <div class="flex flex-col justify-center text-center">
+    <h1>Export Facebook Comments</h1>
+
+    <button class="py-4 px-4 my-1 rounded-md hover:shadow-md text-white bg-red-700 hover:bg-red-800" type="button"
+      id="launch">1. Launch in mobile Facebook</button>
+    <button class="py-4 px-4 my-1 rounded-md hover:shadow-md text-white bg-red-600 hover:bg-red-800" type="button"
+      id="expand">2. Expand more comments</button>
+    <button class="py-4 px-4 my-1 rounded-md hover:shadow-md text-white bg-red-500 hover:bg-red-800" type="button"
+      id="extract">3. Save as .json</button>
+    <button class="py-4 px-4 my-1 rounded-md hover:shadow-md text-white bg-red-400 hover:bg-red-800" type="button"
+      id="export">4. Launch link to convert to csv</button>
+
+    <span>Developed by <a class="underline" target="_blank" href="http://linkedin.com/in/alishahlakhani/">Ali Shah
+        Lakhani</a></span>
+  </div>
+
+  <script src="scripts/popup.js"></script>
+</body>
+
+</html>
