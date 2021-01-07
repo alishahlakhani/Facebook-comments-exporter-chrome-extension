@@ -6,27 +6,21 @@ chrome.extension.onMessage.addListener(function (message, sender, sendResponse) 
         case "expand":
             //to click more
             document.querySelector("._108_").click()
+            // click on subcomments
+            document.querySelectorAll("._2b1h.async_elem > a").forEach(a => a.click())
+            // click on loadmore subcomments
+            document.querySelectorAll("._2b1l > a.async_elem").forEach(a => a.click())
+            
             return;
         case "extract":
             let list = [];
-            document.querySelectorAll("._2b06").forEach(i => {
-                let name = i.children[0].innerText;
-                let link = i.children[0].children[0] && i.children[0].children[0].attributes && (i.children[0].children[0].attributes[i.children[0].children[0].attributes.length - 1].textContent || "ERRORERROR")
-                link = `https://www.facebook.com${link}`
-                let comment = i.children[1].innerHTML
-                let postedIn = window.location.href
-                list.push({ name, link, comment, postedIn })
-            })
-
-
-            let csvContent = "data:text/csv;charset=utf-8,";
-            let header = `User Name, Profile Link, Comment, Posted in Group`;
-            csvContent += header + "\n";
-
-            list.forEach(item => {
-                let row = `${item.name.replace(/,/g, "")}, ${item.link.replace(/,/g, "")}, ${item.comment.replace(/,/g, "").replace(/<[^>]*>?/gm, '')}, ${item.postedIn.replace(/,/g, "")}\n`;
-                csvContent += row;
-            })
+            
+            let comments = document.querySelectorAll("._2b04"); //Find all comments on page
+            
+            for (var i = 0; i < comments.length; ) {
+                i += findChildComments(comments[i],list); // Comments processing and hierarchy creation
+            }
+            
 
             download(JSON.stringify(list, null, 2), 'report.json', 'text/plain');
             return;
@@ -44,6 +38,34 @@ chrome.extension.onMessage.addListener(function (message, sender, sendResponse) 
         // link.click();
     }
 })
+
+function findChildComments(comment, list){
+    let index = 0;
+    // Process comment
+    let i = comment.querySelector("._2b06");
+    
+    let newComment = {};
+
+    if(i !== null){
+        let name = i.children[0].innerText;
+        let link = i.children[0].children[0] && i.children[0].children[0].attributes && (i.children[0].children[0].attributes[i.children[0].children[0].attributes.length - 1].textContent || "ERRORERROR")
+        link = `https://www.facebook.com${link}`
+        let comment = i.children[1].innerHTML;
+        let postedIn = window.location.href;
+        newComment = { name, link, comment, postedIn,child:[] };
+        list.push(newComment);
+    }
+    
+    let childComments = comment.querySelectorAll("._2b04");
+
+    if (childComments !== 'undefined'){
+        childComments.forEach( childComment =>{
+            index += findChildComments(childComment, newComment.child);
+        });
+    }
+    
+    return index + 1;
+}
 
 function download(content, fileName, contentType) {
     var a = document.createElement("a");
